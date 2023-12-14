@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
-using WyszukiwanieGrup;
+using DodajOem;
 
 [assembly: CallbackAssemblyDescription("Dodaj OEM",
 "Dodaj Kod OEM",
@@ -18,13 +18,13 @@ using WyszukiwanieGrup;
 "2023.2",
 "07-12-2023")]
 
-namespace Cena_Detaliczna_Na_ZS
+namespace DodajOem
 {
     [SubscribeProcedure((Procedures)Procedures.TwrEdycja, "callback na karcie towaru")]
     public class callbacktestowy : Callback
     {
-        ClaWindow button; // tutaj zeby dalo sie uzywac we wszystkich metodach
-        ClaWindow ButtonParent; // tutaj zeby dalo sie uzywac we wszystkich metodach
+        ClaWindow button;
+        ClaWindow ButtonParent;
 
         public override void Init()
         {
@@ -61,24 +61,7 @@ namespace Cena_Detaliczna_Na_ZS
             try
             {
                 DodajOEMForm form1 = new DodajOEMForm(TwrKarty.Twr_GIDNumer, Runtime.ActiveRuntime.Repository.Connection.Database.ToString());
-
                 form1.Show();
-
-                /*ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = @"K:\Dodatki Hydra\WyszukiwanieGrup.exe";
-
-                // jesli jakis argument bedzie zawieral spacje to nalezy go podac w ten sposob: "\"" + costam + "\""
-                startInfo.Arguments = TwrKarty.Twr_GIDNumer.ToString() + " " + "\"" + TwrKarty.Twr_Kod.ToString() + "\"" + " " + "\"" + TwrKarty.Twr_Nazwa.ToString() + "\"" + " " + "\"" +  Runtime.ActiveRuntime.Repository.Connection.Database.ToString() + "\""; // przekazanie do aplikacji exe do konstruktora parametrów (parametry powinny byc oddzielone spacjami!)
-
-
-                Process process = new Process();
-                process.StartInfo = startInfo;
-                Thread th = new Thread(() =>
-                {
-                    process.Start();
-
-                });
-                th.Start();*/
             }
             catch (Exception ex)
             {

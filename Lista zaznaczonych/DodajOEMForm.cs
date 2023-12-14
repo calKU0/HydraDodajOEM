@@ -7,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using ClassLibrary1;
+using DodajOem;
 using System.Collections;
 using System.Reflection;
+using Hydra;
 
-namespace WyszukiwanieGrup
+namespace DodajOem
 {
     public partial class DodajOEMForm : Form
     {
@@ -19,6 +20,7 @@ namespace WyszukiwanieGrup
         private string Baza { get; set; }
         private string[] kodyOEM { get; set; }
         private SqlConnection connection { get; set; }
+        private string Search { get; set; } = "";
         public DodajOEMForm(long GidNumer, string Baza)
         {
             try
@@ -27,6 +29,7 @@ namespace WyszukiwanieGrup
                 this.Baza = Baza;
                 InitializeComponent();
                 InitializeRows(twrGidNumer);
+                dataGridView1.Rows.RemoveAt(0);
             }
             catch (Exception ex) { MessageBox.Show("Wystąpił błąd przy otwieraniu formularza " + ex); }
         }
@@ -34,7 +37,7 @@ namespace WyszukiwanieGrup
         {
             if (e.ColumnIndex == dataGridView1.Columns["Dostawca"].Index && e.RowIndex >= 0)
             {
-                using (var forma = new DostawcyForm(Baza))
+                using (var forma = new DostawcyForm(Baza, Search))
                 {
                     var result = forma.ShowDialog();
 
@@ -42,6 +45,7 @@ namespace WyszukiwanieGrup
                     {
                         string wybranyDostawca = forma.Dostawca;
                         int wybranyDostawcaGid = forma.DostawcaGidNumer;
+                        Search = forma.Search;
                         dataGridView1.Rows[e.RowIndex].Cells["dostawca"].Value = wybranyDostawca;
                         dataGridView1.Rows[e.RowIndex].Cells["dostawcaGidNumer"].Value = wybranyDostawcaGid;
                     }
@@ -51,6 +55,9 @@ namespace WyszukiwanieGrup
         private void dodajButton_Click(object sender, EventArgs e)
         {
             dataGridView1.Rows.Add();
+            dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;
+            dataGridView1.CurrentCell = dataGridView1.Rows[dataGridView1.RowCount - 1].Cells["kodOEM"];
+            dataGridView1.BeginEdit(true);
         }
         private void zapiszButton_Click(object sender, EventArgs e)
         {
@@ -124,6 +131,7 @@ namespace WyszukiwanieGrup
                         /* Zapytanie, które jeśli:
                          * 1. Nie ma zapisu w tabeli TwrKodyOEM, to INSERTuje nowe warości (jeśli jest to nowy rekord, to @oemGidNumer ma wartość NULL)
                          * 2. Jest zapis w tabeli, to UPDATEuje je pod warunkiem, że zmieniły się wartości (porównanie danych z formularza do danych z bazy)
+                         * 3. Usuwa Opis Krótki jeśli są w nim kody OEM
                          */
                         string query = @"IF NOT EXISTS (SELECT * FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer)
                                  BEGIN
@@ -138,6 +146,10 @@ namespace WyszukiwanieGrup
                                      BEGIN
                                         UPDATE dbo.TwrKodyOEM SET TKO_KntNumer = @kntGidNumer, TKO_OEM = @kodOEM, TKO_PokazB2B = @pokazB2B, TKO_SzukajB2B = @szukajB2B WHERE TKO_GidNumer = @oemGidNumer
                                      END
+                                 END
+                                 IF (SELECT isnull(TPO_OpisKrotki,'') FROM CDN.TwrAplikacjeOpisy WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @twrGidNumer) <> ''
+                                 BEGIN
+                                     UPDATE CDN.TwrAplikacjeOpisy SET TPO_OpisKrotki = '' WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @twrGidNumer
                                  END";
                         SqlCommand command = new SqlCommand(query, connection);
                         command.Parameters.AddWithValue("@kodOEM", row.Cells["kodOEM"].Value);
@@ -158,7 +170,10 @@ namespace WyszukiwanieGrup
                         rowsAffected += czyWykonano == -1 ? 0 : czyWykonano;
                         ColorRow(row.Index);
                     }
-                    MessageBox.Show($"Zaktualizowano {rowsAffected} wierszy");
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show($"Zaktualizowano kody OEM");
+                    }
                 }
             }
             catch (Exception ex) { MessageBox.Show("Napotkano błąd podczas zapisu kodów OEM " + ex); }
@@ -244,6 +259,58 @@ namespace WyszukiwanieGrup
         public void ColorRow(int index, Color color)
         {
             dataGridView1.Rows[index].DefaultCellStyle.BackColor = color;
+        }
+        private void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.DialogResult = DialogResult.Cancel;
+                this.Close();
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                int rowIndex = dataGridView1.CurrentCell.RowIndex;
+                int columnIndex = dataGridView1.CurrentCell.ColumnIndex;
+                if (columnIndex == dataGridView1.Columns["Dostawca"].Index && rowIndex >= 0)
+                {
+                    using (var forma = new DostawcyForm(Baza, Search))
+                    {
+                        var result = forma.ShowDialog();
+
+                        if (result == DialogResult.OK)
+                        {
+                            string wybranyDostawca = forma.Dostawca;
+                            int wybranyDostawcaGid = forma.DostawcaGidNumer;
+                            Search = forma.Search;
+                            dataGridView1.Rows[rowIndex].Cells["dostawca"].Value = wybranyDostawca;
+                            dataGridView1.Rows[rowIndex].Cells["dostawcaGidNumer"].Value = wybranyDostawcaGid;
+                        }
+                    }
+                }
+                e.SuppressKeyPress = true;
+            }
+            else if (e.Control == true && e.KeyCode == Keys.V) //Kopiowanie
+            {
+                string s = Clipboard.GetText();
+                string[] fields = s.Replace("\n", "").Split('\r');
+                int i = dataGridView1.Rows.Count - 1;
+                foreach (string f in fields)
+                {
+                    dataGridView1.Rows.Add(f);
+                    ColorRow(i);
+                    i += 1;
+                }
+            }
+        }
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {

@@ -8,7 +8,7 @@
     <ProjectGuid>{3CCCBA81-BA90-4997-A61E-D0B9C8574D17}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
+    <RootNamespace>DodajOem</RootNamespace>
     <AssemblyName>Lista zaznaczonych</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -79,13 +79,22 @@
       <DependentUpon>DostawcyForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="icons\" />
+    <None Include="icons\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\copy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\save.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

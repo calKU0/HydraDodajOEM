@@ -1,7 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lista zaznaczonych", "Lista zaznaczonych\Lista zaznaczonych.csproj", "{3CCCBA81-BA90-4997-A61E-D0B9C8574D17}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DodajOem", "Lista zaznaczonych\DodajOem.csproj", "{3CCCBA81-BA90-4997-A61E-D0B9C8574D17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {869E261E-5B6A-45B9-96DF-247DDB3D77B9}
 	EndGlobalSection
 EndGlobal
