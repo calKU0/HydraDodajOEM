@@ -29,7 +29,6 @@ namespace DodajOem
                 this.Baza = Baza;
                 InitializeComponent();
                 InitializeRows(twrGidNumer);
-                dataGridView1.Rows.RemoveAt(0);
             }
             catch (Exception ex) { MessageBox.Show("Wystąpił błąd przy otwieraniu formularza " + ex); }
         }
@@ -73,7 +72,7 @@ namespace DodajOem
                     dataGridView1.Rows.RemoveAt(index);
                     return;
                 }
-                using (SqlConnection connection = new SqlConnection("user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
                 {
                     connection.Open();
                     string query = @"DELETE FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer";
@@ -112,7 +111,7 @@ namespace DodajOem
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection("user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
                 {
                     connection.Open();
                     int rowsAffected = 0;
@@ -183,9 +182,9 @@ namespace DodajOem
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection("user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
                 {
-                    string query = "SELECT TKO_GidNumer, TKO_OEM, Knt_Akronim, TKO_KntNumer, TKO_SzukajB2B, TKO_PokazB2B FROM dbo.TwrKodyOEM LEFT JOIN cdn.KntKarty on knt_gidnumer = TKO_KntNumer WHERE TKO_TwrNumer = @GidNumer";
+                    string query = "SELECT TKO_GidNumer, TKO_OEM, Knt_Nazwa1, TKO_KntNumer, TKO_SzukajB2B, TKO_PokazB2B FROM dbo.TwrKodyOEM LEFT JOIN cdn.KntKarty on knt_gidnumer = TKO_KntNumer WHERE TKO_TwrNumer = @GidNumer";
                     connection.Open();
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@GidNumer", GidNumer);
@@ -196,7 +195,7 @@ namespace DodajOem
                     {
                         while (reader.Read())
                         {
-                            dataGridView1.Rows.Add(reader["TKO_OEM"], reader["Knt_Akronim"], Convert.ToBoolean(reader["TKO_PokazB2B"]), Convert.ToBoolean(reader["TKO_SzukajB2B"]), reader["TKO_KntNumer"], reader["TKO_GidNumer"]);
+                            dataGridView1.Rows.Add(reader["TKO_OEM"], reader["Knt_Nazwa1"], Convert.ToBoolean(reader["TKO_PokazB2B"]), Convert.ToBoolean(reader["TKO_SzukajB2B"]), reader["TKO_KntNumer"], reader["TKO_GidNumer"]);
                             ColorRow(i);
                             i += 1;
                         }
@@ -211,7 +210,6 @@ namespace DodajOem
                         reader = command.ExecuteReader();
                         if (reader.HasRows)
                         {
-
                             while (reader.Read())
                             {
                                 kodyOEM = reader["TPO_OpisKrotki"].ToString().Split(',');

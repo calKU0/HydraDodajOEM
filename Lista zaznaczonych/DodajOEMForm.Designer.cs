@@ -50,6 +50,10 @@ namespace DodajOem
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox7 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -122,7 +126,7 @@ namespace DodajOem
             this.wklejButton.FlatAppearance.BorderSize = 0;
             this.wklejButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.wklejButton.Image = global::DodajOem.Properties.Resources.copy;
-            this.wklejButton.Location = new System.Drawing.Point(70, 438);
+            this.wklejButton.Location = new System.Drawing.Point(83, 437);
             this.wklejButton.Name = "wklejButton";
             this.wklejButton.Size = new System.Drawing.Size(33, 33);
             this.wklejButton.TabIndex = 10;
@@ -134,7 +138,7 @@ namespace DodajOem
             this.usunButton.FlatAppearance.BorderSize = 0;
             this.usunButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usunButton.Image = global::DodajOem.Properties.Resources.delete;
-            this.usunButton.Location = new System.Drawing.Point(138, 438);
+            this.usunButton.Location = new System.Drawing.Point(157, 437);
             this.usunButton.Name = "usunButton";
             this.usunButton.Size = new System.Drawing.Size(33, 33);
             this.usunButton.TabIndex = 10;
@@ -145,7 +149,7 @@ namespace DodajOem
             this.zapiszButton.FlatAppearance.BorderSize = 0;
             this.zapiszButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.zapiszButton.Image = global::DodajOem.Properties.Resources.save;
-            this.zapiszButton.Location = new System.Drawing.Point(201, 439);
+            this.zapiszButton.Location = new System.Drawing.Point(231, 438);
             this.zapiszButton.Name = "zapiszButton";
             this.zapiszButton.Size = new System.Drawing.Size(31, 31);
             this.zapiszButton.TabIndex = 10;
@@ -156,7 +160,7 @@ namespace DodajOem
             this.dodajButton.FlatAppearance.BorderSize = 0;
             this.dodajButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.dodajButton.Image = ((System.Drawing.Image)(resources.GetObject("dodajButton.Image")));
-            this.dodajButton.Location = new System.Drawing.Point(12, 438);
+            this.dodajButton.Location = new System.Drawing.Point(12, 437);
             this.dodajButton.Name = "dodajButton";
             this.dodajButton.Size = new System.Drawing.Size(33, 33);
             this.dodajButton.TabIndex = 10;
@@ -229,13 +233,73 @@ namespace DodajOem
             this.textBox3.TabIndex = 6;
             this.textBox3.Text = "- Zdublowany kod";
             // 
+            // textBox4
+            // 
+            this.textBox4.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.textBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox4.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox4.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.textBox4.Location = new System.Drawing.Point(12, 475);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(33, 13);
+            this.textBox4.TabIndex = 6;
+            this.textBox4.Text = "Dodaj";
+            this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox5
+            // 
+            this.textBox5.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox5.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox5.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.textBox5.Location = new System.Drawing.Point(83, 476);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(33, 13);
+            this.textBox5.TabIndex = 6;
+            this.textBox5.Text = "Wklej";
+            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox6
+            // 
+            this.textBox6.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox6.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox6.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.textBox6.Location = new System.Drawing.Point(157, 476);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ReadOnly = true;
+            this.textBox6.Size = new System.Drawing.Size(33, 13);
+            this.textBox6.TabIndex = 6;
+            this.textBox6.Text = "Usuń";
+            this.textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox7
+            // 
+            this.textBox7.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox7.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox7.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.textBox7.Location = new System.Drawing.Point(230, 476);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.ReadOnly = true;
+            this.textBox7.Size = new System.Drawing.Size(33, 13);
+            this.textBox7.TabIndex = 6;
+            this.textBox7.Text = "Zapisz";
+            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // DodajOEMForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(659, 489);
+            this.ClientSize = new System.Drawing.Size(659, 494);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.textBox7);
+            this.Controls.Add(this.textBox6);
+            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.textBox4);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox2);
@@ -274,6 +338,10 @@ namespace DodajOem
         private DataGridViewCheckBoxColumn szukajB2B;
         private DataGridViewTextBoxColumn dostawcaGidNumer;
         private DataGridViewTextBoxColumn oemGidNumer;
+        private TextBox textBox4;
+        private TextBox textBox5;
+        private TextBox textBox6;
+        private TextBox textBox7;
     }
 }
 

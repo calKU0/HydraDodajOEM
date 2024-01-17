@@ -22,7 +22,7 @@ namespace DodajOem
             {
                 this.Search = search;
                 InitializeComponent();
-                using (SqlConnection connection = new SqlConnection("user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database=" + baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + baza + ";connection timeout=5;"))
                 {
                     connection.Open();
                     string query = "SELECT Knt_GIDNumer, Knt_Nazwa1 as Dostawca FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' order by Knt_Akronim";

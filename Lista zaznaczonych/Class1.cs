@@ -15,7 +15,7 @@ using DodajOem;
 "Dodaj Kod OEM",
 "Krzysztof Kurowski",
 "1.0",
-"2023.2",
+"2023.1",
 "07-12-2023")]
 
 namespace DodajOem
@@ -34,25 +34,33 @@ namespace DodajOem
 
         public bool OnOpenWindow(Procedures ProcId, int ControlId, Events Event)
         {
-                ClaWindow Parent = GetWindow();
+            int liczbaOem = LiczbaNumerowOem(TwrKarty.Twr_GIDNumer);
+            ClaWindow Parent = GetWindow();
+            ButtonParent = Parent.AllChildren["?Pinezka"]; // od ktorego przycisku
+            button = Parent.Children["?TabAplikacje"].Children.Add(ControlTypes.button); // w ktorej belce
+            button.Visible = true;
+            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw) - 200, 112, 20);
+            button.TextRaw = $"Numery OEM ({liczbaOem})";
+            if (liczbaOem > 0)
+            {
+                button.TextRaw = $"Numery OEM ({liczbaOem})";
+                button.BackgroundRaw = "32768";
+            }
 
-                ButtonParent = Parent.AllChildren["?Pinezka"]; // od ktorego przycisku
-                button = Parent.Children["?TabAplikacje"].Children.Add(ControlTypes.button); // w ktorej belce
-                button.Visible = true;
-
-                button.TextRaw = "Dodaj OEM";
-
-                button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 100, Convert.ToInt32(ButtonParent.YposRaw) - 0, 60, 15);
+            if (liczbaOem <= 0)
+            {
+                
+            }
 
 
-                AddSubscription(false, button.Id, Events.Accepted, new TakeEventDelegate(NewButton_OnAfterMouseDown));
+            AddSubscription(false, button.Id, Events.Accepted, new TakeEventDelegate(NewButton_OnAfterMouseDown));
 
-                return true; 
+            return true; 
         }
 
         public bool ChangeWindow(Procedures ProcId, int ControlId, Events Event)
         {
-            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 107, Convert.ToInt32(ButtonParent.YposRaw) + 0, 80, 20);
+            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw) - 200, 112, 20);
             return true;
         }
 
@@ -76,6 +84,25 @@ namespace DodajOem
 
         public override void Cleanup()
         {
+        }
+
+        public int LiczbaNumerowOem(long twrGidNumer)
+        {
+            int liczbaOem = 0;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Runtime.ActiveRuntime.Repository.Connection.Database.ToString() + ";connection timeout=5;"))
+                {
+                    connection.Open();
+
+                    string query = @"SELECT COUNT(*) FROM dbo.TwrKodyOem WHERE TKO_TwrNumer = @twrGidNumer";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@twrGidNumer", twrGidNumer);
+                    liczbaOem = (int)command.ExecuteScalar();
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+            return liczbaOem;
         }
     }
 }
