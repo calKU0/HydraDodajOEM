@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Diagnostics;
 using DodajOem;
+using ADODB;
 
 [assembly: CallbackAssemblyDescription("Dodaj OEM",
 "Dodaj Kod OEM",
@@ -25,6 +26,7 @@ namespace DodajOem
     {
         ClaWindow button;
         ClaWindow ButtonParent;
+        string connectionString = "user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database=" + Runtime.ActiveRuntime.Repository.Connection.Database.ToString() + ";connection timeout=5;";
 
         public override void Init()
         {
@@ -40,21 +42,20 @@ namespace DodajOem
             button = Parent.Children["?TabAplikacje"].Children.Add(ControlTypes.button); // w ktorej belce
             button.Visible = true;
             button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw) - 200, 112, 20);
-            button.TextRaw = $"Numery OEM ({liczbaOem})";
+            button.TextRaw = $"Kody OEM ({liczbaOem})";
             if (liczbaOem > 0)
             {
-                button.TextRaw = $"Numery OEM ({liczbaOem})";
                 button.BackgroundRaw = "32768";
             }
 
             if (liczbaOem <= 0)
             {
-                
+                button.FontColorRaw = "16777215";
+                button.BackgroundRaw = "255";
             }
 
 
             AddSubscription(false, button.Id, Events.Accepted, new TakeEventDelegate(NewButton_OnAfterMouseDown));
-
             return true; 
         }
 
@@ -68,7 +69,7 @@ namespace DodajOem
         {
             try
             {
-                DodajOEMForm form1 = new DodajOEMForm(TwrKarty.Twr_GIDNumer, Runtime.ActiveRuntime.Repository.Connection.Database.ToString());
+                DodajOEMForm form1 = new DodajOEMForm(TwrKarty.Twr_GIDNumer, connectionString);
                 form1.Show();
             }
             catch (Exception ex)
@@ -91,7 +92,7 @@ namespace DodajOem
             int liczbaOem = 0;
             try
             {
-                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Runtime.ActiveRuntime.Repository.Connection.Database.ToString() + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 

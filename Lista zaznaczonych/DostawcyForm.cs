@@ -16,13 +16,13 @@ namespace DodajOem
         public int DostawcaGidNumer { get; set; }
         public string Search { get; set; }
         private DataTable Dt { get; set; } = new DataTable("Dostawcy");
-        public DostawcyForm(string baza, string search = "")
+        public DostawcyForm(string connectionString, string search = "")
         {
             try
             {
                 this.Search = search;
                 InitializeComponent();
-                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     string query = "SELECT Knt_GIDNumer, Knt_Nazwa1 as Dostawca FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' order by Knt_Akronim";

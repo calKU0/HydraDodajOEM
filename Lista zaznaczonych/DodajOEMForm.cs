@@ -11,32 +11,64 @@ using DodajOem;
 using System.Collections;
 using System.Reflection;
 using Hydra;
+using System.Drawing.Text;
+using System.Xml.Serialization;
 
 namespace DodajOem
 {
     public partial class DodajOEMForm : Form
     {
+        CheckBox headerSzukajB2BChk = new CheckBox();
+        CheckBox headerPokazB2BChk = new CheckBox();
         private long twrGidNumer { get; set; }
-        private string Baza { get; set; }
+        private string connectionString { get; }
         private string[] kodyOEM { get; set; }
         private SqlConnection connection { get; set; }
         private string Search { get; set; } = "";
-        public DodajOEMForm(long GidNumer, string Baza)
+        public DodajOEMForm(long GidNumer, string connectionString)
         {
             try
             {
                 this.twrGidNumer = GidNumer;
-                this.Baza = Baza;
+                this.connectionString = connectionString;
                 InitializeComponent();
                 InitializeRows(twrGidNumer);
             }
             catch (Exception ex) { MessageBox.Show("Wystąpił błąd przy otwieraniu formularza " + ex); }
         }
+
+        private void DodajOEMForm_Load(object sender, EventArgs e)
+        { 
+
+            Rectangle szukajB2BHeader = this.dataGridView1.GetCellDisplayRectangle(this.dataGridView1.Columns.IndexOf(this.szukajB2B), -1, true);
+            headerSzukajB2BChk.Location = new Point(szukajB2BHeader.Location.X + 4, szukajB2BHeader.Location.Y + (szukajB2BHeader.Height - szukajB2BHeader.Height) / 2);
+            headerSzukajB2BChk.Click += new EventHandler(headerSzukajB2BChk_Click);
+            headerSzukajB2BChk.FlatStyle = FlatStyle.Flat;
+            headerSzukajB2BChk.BackColor = Color.Transparent;
+            headerSzukajB2BChk.ForeColor = Color.Transparent;
+            headerSzukajB2BChk.FlatAppearance.MouseOverBackColor = Color.Transparent;
+            headerSzukajB2BChk.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            headerSzukajB2BChk.FlatAppearance.BorderSize = 0;
+
+            Rectangle pokazB2BHeader = this.dataGridView1.GetCellDisplayRectangle(this.dataGridView1.Columns.IndexOf(this.pokazB2B), -1, true);
+            headerPokazB2BChk.Location = new Point(pokazB2BHeader.Location.X + 4, pokazB2BHeader.Location.Y + (pokazB2BHeader.Height - pokazB2BHeader.Height) / 2);
+            headerPokazB2BChk.Click += new EventHandler(headerPokazB2BChk_Click);
+            headerPokazB2BChk.FlatStyle = FlatStyle.Flat;
+            headerPokazB2BChk.BackColor = Color.Transparent;
+            headerPokazB2BChk.ForeColor = Color.Transparent;
+            headerPokazB2BChk.FlatAppearance.MouseOverBackColor = Color.Transparent;
+            headerPokazB2BChk.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            headerPokazB2BChk.FlatAppearance.BorderSize = 0;
+
+            dataGridView1.Controls.Add(headerSzukajB2BChk);
+            dataGridView1.Controls.Add(headerPokazB2BChk);
+
+        }
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == dataGridView1.Columns["Dostawca"].Index && e.RowIndex >= 0)
             {
-                using (var forma = new DostawcyForm(Baza, Search))
+                using (var forma = new DostawcyForm(connectionString, Search))
                 {
                     var result = forma.ShowDialog();
 
@@ -72,7 +104,7 @@ namespace DodajOem
                     dataGridView1.Rows.RemoveAt(index);
                     return;
                 }
-                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     string query = @"DELETE FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer";
@@ -95,7 +127,7 @@ namespace DodajOem
                     {
                         if (e.RowIndex != a)
                         {
-                            if ((string)dataGridView1.Rows[a].Cells["kodOEM"].Value == (string)dataGridView1.Rows[e.RowIndex].Cells["kodOEM"].Value)
+                            if (dataGridView1.Rows[a].Cells["kodOEM"].Value.ToString() == dataGridView1.Rows[e.RowIndex].Cells["kodOEM"].Value.ToString())
                             {
                                 ColorRow(e.RowIndex, Color.Red);
                                 return;
@@ -111,7 +143,7 @@ namespace DodajOem
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     int rowsAffected = 0;
@@ -182,7 +214,7 @@ namespace DodajOem
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection("user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database=" + Baza + ";connection timeout=5;"))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     string query = "SELECT TKO_GidNumer, TKO_OEM, Knt_Nazwa1, TKO_KntNumer, TKO_SzukajB2B, TKO_PokazB2B FROM dbo.TwrKodyOEM LEFT JOIN cdn.KntKarty on knt_gidnumer = TKO_KntNumer WHERE TKO_TwrNumer = @GidNumer";
                     connection.Open();
@@ -229,14 +261,59 @@ namespace DodajOem
 
         private void wklejButton_Click(object sender, EventArgs e)
         {
-            string s = Clipboard.GetText();
-            string[] fields = s.Replace("\n", "").Split('\r');
-            int i = dataGridView1.Rows.Count - 1;
-            foreach (string f in fields)
+            if (Clipboard.ContainsText())
             {
-                dataGridView1.Rows.Add(f);
-                ColorRow(i);
-                i += 1;
+                string clipboardText = Clipboard.GetText(TextDataFormat.Text);
+                string[] rows = clipboardText.Split('\n', '\r');
+                int startRowIndex = dataGridView1.Rows.Count;
+
+                foreach (string rowText in rows)
+                {
+                    if (string.IsNullOrWhiteSpace(rowText))
+                        continue;
+
+                    string[] values = rowText.Split('\t');
+
+                    int rowIndex = dataGridView1.Rows.Add();
+
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        dataGridView1.Rows[rowIndex].Cells[i].Value = values[i].Trim();
+
+                        if (dataGridView1.Columns[i] is DataGridViewCheckBoxColumn)
+                        {
+                            if (values[i].Trim() == "1" || values[i].Trim().ToUpper() == "TAK")
+                            {
+                                dataGridView1.Rows[rowIndex].Cells[i].Value = true;
+                            }
+                            else
+                            {
+                                dataGridView1.Rows[rowIndex].Cells[i].Value = false;
+                            }
+                        }
+                    }
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string query = "SELECT Knt_GIDNumer FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' and knt_Nazwa1 = '" + dataGridView1.Rows[rowIndex].Cells["dostawca"].Value + "'order by Knt_Akronim";
+                        SqlCommand command = new SqlCommand(query, connection);
+                        object result = command.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            dataGridView1.Rows[rowIndex].Cells["dostawcaGidNumer"].Value = result.ToString();
+                        }
+                        else
+                        {
+                            dataGridView1.Rows[rowIndex].Cells["dostawca"].Value = String.Empty;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Brak danych do skopiowania.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         public void ColorRow(int index, bool forceChange = false)
@@ -271,7 +348,7 @@ namespace DodajOem
                 int columnIndex = dataGridView1.CurrentCell.ColumnIndex;
                 if (columnIndex == dataGridView1.Columns["Dostawca"].Index && rowIndex >= 0)
                 {
-                    using (var forma = new DostawcyForm(Baza, Search))
+                    using (var forma = new DostawcyForm(connectionString, Search))
                     {
                         var result = forma.ShowDialog();
 
@@ -289,15 +366,23 @@ namespace DodajOem
             }
             else if (e.Control == true && e.KeyCode == Keys.V) //Kopiowanie
             {
-                string s = Clipboard.GetText();
-                string[] fields = s.Replace("\n", "").Split('\r');
-                int i = dataGridView1.Rows.Count - 1;
-                foreach (string f in fields)
-                {
-                    dataGridView1.Rows.Add(f);
-                    ColorRow(i);
-                    i += 1;
-                }
+                wklejButton.PerformClick();
+            }
+        }
+        private void headerSzukajB2BChk_Click(object sender, EventArgs e)
+        {
+            dataGridView1.EndEdit();
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                row.Cells["szukajB2B"].Value = headerSzukajB2BChk.Checked;
+            }
+        }
+        private void headerPokazB2BChk_Click(object sender, EventArgs e)
+        {
+            dataGridView1.EndEdit();
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                row.Cells["pokazB2B"].Value = headerPokazB2BChk.Checked;
             }
         }
         protected override bool ProcessDialogKey(Keys keyData)

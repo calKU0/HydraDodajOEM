@@ -75,7 +75,7 @@ namespace DodajOem
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.dataGridView1.Size = new System.Drawing.Size(624, 403);
+            this.dataGridView1.Size = new System.Drawing.Size(697, 403);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
@@ -99,15 +99,15 @@ namespace DodajOem
             // 
             this.pokazB2B.HeaderText = "Pokaz B2B";
             this.pokazB2B.Name = "pokazB2B";
-            this.pokazB2B.Width = 50;
+            this.pokazB2B.Width = 85;
+            this.pokazB2B.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // 
             // szukajB2B
             // 
             this.szukajB2B.HeaderText = "Szukaj B2B";
             this.szukajB2B.Name = "szukajB2B";
-            this.szukajB2B.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.szukajB2B.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.szukajB2B.Width = 51;
+            this.szukajB2B.Width = 87;
+            this.szukajB2B.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // 
             // dostawcaGidNumer
             // 
@@ -169,7 +169,7 @@ namespace DodajOem
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Lime;
-            this.pictureBox1.Location = new System.Drawing.Point(526, 425);
+            this.pictureBox1.Location = new System.Drawing.Point(586, 426);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(15, 15);
             this.pictureBox1.TabIndex = 5;
@@ -178,7 +178,7 @@ namespace DodajOem
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.Red;
-            this.pictureBox2.Location = new System.Drawing.Point(526, 468);
+            this.pictureBox2.Location = new System.Drawing.Point(586, 469);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(15, 15);
             this.pictureBox2.TabIndex = 5;
@@ -188,7 +188,7 @@ namespace DodajOem
             // 
             this.pictureBox3.BackColor = System.Drawing.Color.Yellow;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.pictureBox3.Location = new System.Drawing.Point(526, 446);
+            this.pictureBox3.Location = new System.Drawing.Point(586, 447);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(15, 15);
             this.pictureBox3.TabIndex = 5;
@@ -200,7 +200,7 @@ namespace DodajOem
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox1.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.textBox1.Location = new System.Drawing.Point(547, 425);
+            this.textBox1.Location = new System.Drawing.Point(607, 426);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 13);
@@ -213,7 +213,7 @@ namespace DodajOem
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox2.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.textBox2.Location = new System.Drawing.Point(547, 446);
+            this.textBox2.Location = new System.Drawing.Point(607, 447);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(100, 13);
@@ -226,7 +226,7 @@ namespace DodajOem
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox3.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox3.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.textBox3.Location = new System.Drawing.Point(547, 468);
+            this.textBox3.Location = new System.Drawing.Point(607, 469);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(100, 13);
@@ -293,7 +293,7 @@ namespace DodajOem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(659, 494);
+            this.ClientSize = new System.Drawing.Size(719, 494);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox7);
@@ -311,6 +311,7 @@ namespace DodajOem
             this.Controls.Add(this.dataGridView1);
             this.Name = "DodajOEMForm";
             this.Text = "Dodaj OEMY";
+            this.Load += new System.EventHandler(this.DodajOEMForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
