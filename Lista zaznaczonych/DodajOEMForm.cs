@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using DodajOem;
-using System.Collections;
-using System.Reflection;
-using Hydra;
-using System.Drawing.Text;
-using System.Xml.Serialization;
 
 namespace DodajOem
 {
@@ -23,7 +13,7 @@ namespace DodajOem
         private long twrGidNumer { get; set; }
         private string connectionString { get; }
         private string[] kodyOEM { get; set; }
-        private SqlConnection connection { get; set; }
+        private SqlConnection connection { get; }
         private string Search { get; set; } = "";
         public DodajOEMForm(long GidNumer, string connectionString)
         {
