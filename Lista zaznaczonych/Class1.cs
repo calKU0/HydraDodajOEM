@@ -34,7 +34,7 @@ namespace DodajOem
             ButtonParent = Parent.AllChildren["?Pinezka"]; // od ktorego przycisku
             button = Parent.Children["?TabAplikacje"].Children.Add(ControlTypes.button); // w ktorej belce
             button.Visible = true;
-            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw) - 160, 112, 20);
+            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw), 112, 20);
             button.TextRaw = $"Kody OEM ({liczbaOem})";
             if (liczbaOem > 0)
             {
@@ -54,7 +54,7 @@ namespace DodajOem
 
         public bool ChangeWindow(Procedures ProcId, int ControlId, Events Event)
         {
-            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw) - 160, 112, 20);
+            button.Bounds = new Rectangle(Convert.ToInt32(ButtonParent.XposRaw) - 123, Convert.ToInt32(ButtonParent.YposRaw), 112, 20);
             return true;
         }
 

@@ -40,7 +40,6 @@ namespace DodajOem
             this.szukajB2B = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dostawcaGidNumer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.oemGidNumer = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.wklejButton = new System.Windows.Forms.Button();
             this.usunButton = new System.Windows.Forms.Button();
             this.zapiszButton = new System.Windows.Forms.Button();
             this.dodajButton = new System.Windows.Forms.Button();
@@ -51,9 +50,10 @@ namespace DodajOem
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox7 = new System.Windows.Forms.TextBox();
+            this.copyButton = new System.Windows.Forms.Button();
+            this.textBox8 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -100,14 +100,12 @@ namespace DodajOem
             this.pokazB2B.HeaderText = "Pokaz B2B";
             this.pokazB2B.Name = "pokazB2B";
             this.pokazB2B.Width = 85;
-            this.pokazB2B.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // 
             // szukajB2B
             // 
             this.szukajB2B.HeaderText = "Szukaj B2B";
             this.szukajB2B.Name = "szukajB2B";
             this.szukajB2B.Width = 87;
-            this.szukajB2B.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // 
             // dostawcaGidNumer
             // 
@@ -121,24 +119,12 @@ namespace DodajOem
             this.oemGidNumer.Name = "oemGidNumer";
             this.oemGidNumer.Visible = false;
             // 
-            // wklejButton
-            // 
-            this.wklejButton.FlatAppearance.BorderSize = 0;
-            this.wklejButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.wklejButton.Image = global::DodajOem.Properties.Resources.copy;
-            this.wklejButton.Location = new System.Drawing.Point(83, 437);
-            this.wklejButton.Name = "wklejButton";
-            this.wklejButton.Size = new System.Drawing.Size(33, 33);
-            this.wklejButton.TabIndex = 10;
-            this.wklejButton.UseVisualStyleBackColor = true;
-            this.wklejButton.Click += new System.EventHandler(this.wklejButton_Click);
-            // 
             // usunButton
             // 
             this.usunButton.FlatAppearance.BorderSize = 0;
             this.usunButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.usunButton.Image = global::DodajOem.Properties.Resources.delete;
-            this.usunButton.Location = new System.Drawing.Point(157, 437);
+            this.usunButton.Location = new System.Drawing.Point(157, 439);
             this.usunButton.Name = "usunButton";
             this.usunButton.Size = new System.Drawing.Size(33, 33);
             this.usunButton.TabIndex = 10;
@@ -149,7 +135,7 @@ namespace DodajOem
             this.zapiszButton.FlatAppearance.BorderSize = 0;
             this.zapiszButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.zapiszButton.Image = global::DodajOem.Properties.Resources.save;
-            this.zapiszButton.Location = new System.Drawing.Point(231, 438);
+            this.zapiszButton.Location = new System.Drawing.Point(224, 440);
             this.zapiszButton.Name = "zapiszButton";
             this.zapiszButton.Size = new System.Drawing.Size(31, 31);
             this.zapiszButton.TabIndex = 10;
@@ -247,27 +233,13 @@ namespace DodajOem
             this.textBox4.Text = "Dodaj";
             this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // textBox5
-            // 
-            this.textBox5.BackColor = System.Drawing.SystemColors.MenuBar;
-            this.textBox5.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox5.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.textBox5.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.textBox5.Location = new System.Drawing.Point(83, 476);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(33, 13);
-            this.textBox5.TabIndex = 6;
-            this.textBox5.Text = "Wklej";
-            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // textBox6
             // 
             this.textBox6.BackColor = System.Drawing.SystemColors.MenuBar;
             this.textBox6.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox6.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox6.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.textBox6.Location = new System.Drawing.Point(157, 476);
+            this.textBox6.Location = new System.Drawing.Point(157, 477);
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
             this.textBox6.Size = new System.Drawing.Size(33, 13);
@@ -281,13 +253,38 @@ namespace DodajOem
             this.textBox7.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox7.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.textBox7.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.textBox7.Location = new System.Drawing.Point(230, 476);
+            this.textBox7.Location = new System.Drawing.Point(224, 477);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(33, 13);
             this.textBox7.TabIndex = 6;
             this.textBox7.Text = "Zapisz";
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // copyButton
+            // 
+            this.copyButton.FlatAppearance.BorderSize = 0;
+            this.copyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.copyButton.Image = global::DodajOem.Properties.Resources.copy;
+            this.copyButton.Location = new System.Drawing.Point(83, 439);
+            this.copyButton.Name = "copyButton";
+            this.copyButton.Size = new System.Drawing.Size(31, 31);
+            this.copyButton.TabIndex = 10;
+            this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
+            // 
+            // textBox8
+            // 
+            this.textBox8.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.textBox8.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox8.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.textBox8.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.textBox8.Location = new System.Drawing.Point(65, 476);
+            this.textBox8.Name = "textBox8";
+            this.textBox8.ReadOnly = true;
+            this.textBox8.Size = new System.Drawing.Size(72, 13);
+            this.textBox8.TabIndex = 6;
+            this.textBox8.Text = "Skopiuj z karty";
+            this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // DodajOEMForm
             // 
@@ -298,14 +295,14 @@ namespace DodajOem
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox7);
             this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.textBox8);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.wklejButton);
             this.Controls.Add(this.usunButton);
+            this.Controls.Add(this.copyButton);
             this.Controls.Add(this.zapiszButton);
             this.Controls.Add(this.dodajButton);
             this.Controls.Add(this.dataGridView1);
@@ -326,7 +323,6 @@ namespace DodajOem
         private System.Windows.Forms.Button dodajButton;
         private System.Windows.Forms.Button zapiszButton;
         private System.Windows.Forms.Button usunButton;
-        private System.Windows.Forms.Button wklejButton;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
@@ -340,9 +336,10 @@ namespace DodajOem
         private DataGridViewTextBoxColumn dostawcaGidNumer;
         private DataGridViewTextBoxColumn oemGidNumer;
         private TextBox textBox4;
-        private TextBox textBox5;
         private TextBox textBox6;
         private TextBox textBox7;
+        private Button copyButton;
+        private TextBox textBox8;
     }
 }
 

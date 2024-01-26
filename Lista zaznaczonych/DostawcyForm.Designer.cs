@@ -55,9 +55,9 @@ namespace DodajOem
             this.dataGridView1.Location = new System.Drawing.Point(2, 38);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.Size = new System.Drawing.Size(218, 345);
             this.dataGridView1.TabIndex = 1;
-            this.dataGridView1.ScrollBars = ScrollBars.Vertical;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView_KeyDown);
             // 
@@ -80,15 +80,11 @@ namespace DodajOem
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.textBox1);
             this.Name = "DostawcyForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dostawcy";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
-
-
-
 
         }
 

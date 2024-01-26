@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using ADODB;
 
 namespace DodajOem
 {
@@ -154,24 +155,32 @@ namespace DodajOem
                          * 2. Jest zapis w tabeli, to UPDATEuje je pod warunkiem, że zmieniły się wartości (porównanie danych z formularza do danych z bazy)
                          * 3. Usuwa Opis Krótki jeśli są w nim kody OEM
                          */
-                        string query = @"IF NOT EXISTS (SELECT * FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer)
-                                 BEGIN
-                                    INSERT INTO dbo.TwrKodyOEM(TKO_TwrNumer, TKO_KntNumer, TKO_OEM, TKO_PokazB2B, TKO_SzukajB2B) VALUES (@twrGidNumer, @kntGidNumer, @kodOEM, @pokazB2B, @szukajB2B)
-                                 END
-                                 ELSE
-                                 BEGIN
-                                     IF (SELECT TKO_OEM FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @kodOEM 
-                                        OR (SELECT isnull(TKO_KntNumer,0) FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @kntGidNumer
-                                        OR (SELECT TKO_SzukajB2B FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @szukajB2B
-                                        OR (SELECT TKO_PokazB2B FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @pokazB2B
+                        string query = @"
+                                 BEGIN TRY
+                                     BEGIN TRANSACTION TEST
+                                     IF NOT EXISTS (SELECT * FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer)
                                      BEGIN
-                                        UPDATE dbo.TwrKodyOEM SET TKO_KntNumer = @kntGidNumer, TKO_OEM = @kodOEM, TKO_PokazB2B = @pokazB2B, TKO_SzukajB2B = @szukajB2B WHERE TKO_GidNumer = @oemGidNumer
+                                        INSERT INTO dbo.TwrKodyOEM(TKO_TwrNumer, TKO_KntNumer, TKO_OEM, TKO_PokazB2B, TKO_SzukajB2B) VALUES (@twrGidNumer, @kntGidNumer, @kodOEM, @pokazB2B, @szukajB2B)
                                      END
-                                 END
-                                 IF (SELECT isnull(TPO_OpisKrotki,'') FROM CDN.TwrAplikacjeOpisy WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @twrGidNumer) <> ''
-                                 BEGIN
-                                     UPDATE CDN.TwrAplikacjeOpisy SET TPO_OpisKrotki = '' WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @twrGidNumer
-                                 END";
+                                     ELSE
+                                     BEGIN
+                                         IF (SELECT TKO_OEM FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @kodOEM 
+                                            OR (SELECT isnull(TKO_KntNumer,0) FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @kntGidNumer
+                                            OR (SELECT TKO_SzukajB2B FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @szukajB2B
+                                            OR (SELECT TKO_PokazB2B FROM dbo.TwrKodyOEM WHERE TKO_GidNumer = @oemGidNumer) != @pokazB2B
+                                         BEGIN
+                                            UPDATE dbo.TwrKodyOEM SET TKO_KntNumer = @kntGidNumer, TKO_OEM = @kodOEM, TKO_PokazB2B = @pokazB2B, TKO_SzukajB2B = @szukajB2B WHERE TKO_GidNumer = @oemGidNumer
+                                         END
+                                     END
+                                     IF (SELECT isnull(TPO_OpisKrotki,'') FROM CDN.TwrAplikacjeOpisy WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @twrGidNumer) <> ''
+                                     BEGIN
+                                         UPDATE CDN.TwrAplikacjeOpisy SET TPO_OpisKrotki = '' WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @twrGidNumer
+                                     END
+                                     COMMIT
+                                 END TRY
+                                 BEGIN CATCH
+                                    ROLLBACK TRANSACTION
+                                 END CATCH";
                         SqlCommand command = new SqlCommand(query, connection);
                         command.Parameters.AddWithValue("@kodOEM", row.Cells["kodOEM"].Value);
                         command.Parameters.AddWithValue("@twrGidNumer", twrGidNumer);
@@ -187,9 +196,13 @@ namespace DodajOem
                             string oemGidNumer = commandOemNumer.ExecuteScalar().ToString();
                             row.Cells["oemGidNumer"].Value = Int32.Parse(oemGidNumer);
                         }
-
                         rowsAffected += czyWykonano == -1 ? 0 : czyWykonano;
                         ColorRow(row.Index);
+                        if (czyWykonano == 0)
+                        {
+                            ColorRow(row.Index,Color.Red);
+                            MessageBox.Show("Zdublowany Oem w wierszu: " + Convert.ToInt32(row.Index + 1));
+                        }
                     }
                     if (rowsAffected > 0)
                     {
@@ -197,7 +210,10 @@ namespace DodajOem
                     }
                 }
             }
-            catch (Exception ex) { MessageBox.Show("Napotkano błąd podczas zapisu kodów OEM " + ex); }
+            catch (Exception ex) 
+            { 
+                MessageBox.Show("Napotkano błąd podczas zapisu kodów OEM " + ex);
+            }
         }
 
         public void InitializeRows(long GidNumer)
@@ -238,7 +254,7 @@ namespace DodajOem
                             }
                             foreach (string kod in kodyOEM)
                             {
-                                dataGridView1.Rows.Add(kod.Replace(" ", ""), "");
+                                dataGridView1.Rows.Add(kod.Trim());
                                 ColorRow(i);
                                 i += 1;
                             }
@@ -247,64 +263,6 @@ namespace DodajOem
                 }
             }
             catch (Exception ex) { MessageBox.Show("Napotkano błąd: " + ex.ToString()); }
-        }
-
-        private void wklejButton_Click(object sender, EventArgs e)
-        {
-            if (Clipboard.ContainsText())
-            {
-                string clipboardText = Clipboard.GetText(TextDataFormat.Text);
-                string[] rows = clipboardText.Split('\n', '\r');
-                int startRowIndex = dataGridView1.Rows.Count;
-
-                foreach (string rowText in rows)
-                {
-                    if (string.IsNullOrWhiteSpace(rowText))
-                        continue;
-
-                    string[] values = rowText.Split('\t');
-
-                    int rowIndex = dataGridView1.Rows.Add();
-
-                    for (int i = 0; i < values.Length; i++)
-                    {
-                        dataGridView1.Rows[rowIndex].Cells[i].Value = values[i].Trim();
-
-                        if (dataGridView1.Columns[i] is DataGridViewCheckBoxColumn)
-                        {
-                            if (values[i].Trim() == "1" || values[i].Trim().ToUpper() == "TAK")
-                            {
-                                dataGridView1.Rows[rowIndex].Cells[i].Value = true;
-                            }
-                            else
-                            {
-                                dataGridView1.Rows[rowIndex].Cells[i].Value = false;
-                            }
-                        }
-                    }
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        connection.Open();
-
-                        string query = "SELECT Knt_GIDNumer FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' and knt_Nazwa1 = '" + dataGridView1.Rows[rowIndex].Cells["dostawca"].Value + "'order by Knt_Akronim";
-                        SqlCommand command = new SqlCommand(query, connection);
-                        object result = command.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
-                        {
-                            dataGridView1.Rows[rowIndex].Cells["dostawcaGidNumer"].Value = result.ToString();
-                        }
-                        else
-                        {
-                            dataGridView1.Rows[rowIndex].Cells["dostawca"].Value = String.Empty;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Brak danych do skopiowania.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
         public void ColorRow(int index, bool forceChange = false)
         {
@@ -356,8 +314,69 @@ namespace DodajOem
             }
             else if (e.Control == true && e.KeyCode == Keys.V) //Kopiowanie
             {
-                wklejButton.PerformClick();
+                if (Clipboard.ContainsText())
+                {
+                    string clipboardText = Clipboard.GetText(TextDataFormat.Text);
+                    string[] rows = clipboardText.Split('\n', '\r');
+                    int startRowIndex = dataGridView1.Rows.Count;
+
+                    foreach (string rowText in rows)
+                    {
+                        if (string.IsNullOrWhiteSpace(rowText))
+                            continue;
+
+                        string[] values = rowText.Split('\t');
+
+                        int rowIndex = dataGridView1.Rows.Add();
+
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            dataGridView1.Rows[rowIndex].Cells[i].Value = values[i].Trim();
+
+                            if (dataGridView1.Columns[i] is DataGridViewCheckBoxColumn)
+                            {
+                                if (values[i].Trim() == "1" || values[i].Trim().ToUpper() == "TAK")
+                                {
+                                    dataGridView1.Rows[rowIndex].Cells[i].Value = true;
+                                }
+                                else
+                                {
+                                    dataGridView1.Rows[rowIndex].Cells[i].Value = false;
+                                }
+                            }
+                        }
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            connection.Open();
+
+                            string query = "SELECT Knt_GIDNumer FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' and knt_Nazwa1 = '" + dataGridView1.Rows[rowIndex].Cells["dostawca"].Value + "'order by Knt_Akronim";
+                            SqlCommand command = new SqlCommand(query, connection);
+                            object result = command.ExecuteScalar();
+                            if (result != null && result != DBNull.Value)
+                            {
+                                dataGridView1.Rows[rowIndex].Cells["dostawcaGidNumer"].Value = result.ToString();
+                            }
+                            else
+                            {
+                                dataGridView1.Rows[rowIndex].Cells["dostawca"].Value = String.Empty;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Brak danych do skopiowania.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+        }
+
+        private void copyButton_Click(object sender, EventArgs e)
+        {
+            //TODO
+            //Uruchomić formatkę z wyborem towaru
+            //Po wybraniu jeśli ma Twr_Opis to skopiować oemy z opisu
+            //Jeśli nie ma twr opis to skopiować z tabeli TwrKodyOEM
         }
         private void headerSzukajB2BChk_Click(object sender, EventArgs e)
         {
