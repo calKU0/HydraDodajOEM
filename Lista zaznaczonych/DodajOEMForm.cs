@@ -4,6 +4,10 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using ADODB;
+using System.Xml;
+using cdn_api;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DodajOem
 {
@@ -12,10 +16,12 @@ namespace DodajOem
         CheckBox headerSzukajB2BChk = new CheckBox();
         CheckBox headerPokazB2BChk = new CheckBox();
         private long twrGidNumer { get; set; }
-        private string connectionString { get; }
         private string[] kodyOEM { get; set; }
         private SqlConnection connection { get; }
         private string Search { get; set; } = "";
+        private readonly string connectionString;
+        private readonly Int32 APIVersion = 20231;
+        private int IDSesjiXL = 0;
         public DodajOEMForm(long GidNumer, string connectionString)
         {
             try
@@ -29,8 +35,8 @@ namespace DodajOem
         }
 
         private void DodajOEMForm_Load(object sender, EventArgs e)
-        { 
-
+        {
+            LogowanieXL();
             Rectangle szukajB2BHeader = this.dataGridView1.GetCellDisplayRectangle(this.dataGridView1.Columns.IndexOf(this.szukajB2B), -1, true);
             headerSzukajB2BChk.Location = new Point(szukajB2BHeader.Location.X + 4, szukajB2BHeader.Location.Y + (szukajB2BHeader.Height - szukajB2BHeader.Height) / 2);
             headerSzukajB2BChk.Click += new EventHandler(headerSzukajB2BChk_Click);
@@ -228,20 +234,17 @@ namespace DodajOem
                     command.Parameters.AddWithValue("@GidNumer", GidNumer);
 
                     SqlDataReader reader = command.ExecuteReader();
-                    int i = 0;
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            dataGridView1.Rows.Add(reader["TKO_OEM"], reader["Knt_Nazwa1"], Convert.ToBoolean(reader["TKO_PokazB2B"]), Convert.ToBoolean(reader["TKO_SzukajB2B"]), reader["TKO_KntNumer"], reader["TKO_GidNumer"]);
-                            ColorRow(i);
-                            i += 1;
+                            int index = dataGridView1.Rows.Add(reader["TKO_OEM"], reader["Knt_Nazwa1"], Convert.ToBoolean(reader["TKO_PokazB2B"]), Convert.ToBoolean(reader["TKO_SzukajB2B"]), reader["TKO_KntNumer"], reader["TKO_GidNumer"]);
+                            ColorRow(index);
                         }
                     }
                     else
                     {
                         reader.Close();
-                        i = 0;
                         query = "SELECT TPO_OpisKrotki FROM cdn.twrAplikacjeOpisy with (nolock) WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @GidNumer";
                         command = new SqlCommand(query, connection);
                         command.Parameters.AddWithValue("@GidNumer", GidNumer);
@@ -254,9 +257,8 @@ namespace DodajOem
                             }
                             foreach (string kod in kodyOEM)
                             {
-                                dataGridView1.Rows.Add(kod.Trim());
-                                ColorRow(i);
-                                i += 1;
+                                int index = dataGridView1.Rows.Add(kod.Trim());
+                                ColorRow(index);
                             }
                         }
                     }
@@ -373,10 +375,71 @@ namespace DodajOem
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            //TODO
-            //Uruchomić formatkę z wyborem towaru
-            //Po wybraniu jeśli ma Twr_Opis to skopiować oemy z opisu
-            //Jeśli nie ma twr opis to skopiować z tabeli TwrKodyOEM
+            try
+            {
+                int towarGid;
+                int towarTyp;
+
+                XLGIDGrupaInfo_20231 formatka = new XLGIDGrupaInfo_20231();
+                formatka.Wersja = APIVersion;
+                formatka.GIDTyp = 16;
+                formatka.GIDFirma = 449892;
+                formatka.GIDNumer = -1;
+                formatka.GIDLp = 0;
+
+                int wynik = cdn_api.cdn_api.XLUruchomFormatkeWgGID(formatka);
+
+                // pobranie danych wybranego kontrahenta
+                if (wynik == 0)
+                {
+                    towarGid = formatka.GIDNumer;
+                    towarTyp = formatka.GIDTyp;
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        string query = "SELECT TKO_GidNumer, TKO_OEM, Knt_Nazwa1, TKO_KntNumer, TKO_SzukajB2B, TKO_PokazB2B FROM dbo.TwrKodyOEM LEFT JOIN cdn.KntKarty on knt_gidnumer = TKO_KntNumer WHERE TKO_TwrNumer = @GidNumer";
+                        connection.Open();
+                        SqlCommand command = new SqlCommand(query, connection);
+                        command.Parameters.AddWithValue("@GidNumer", towarGid);
+
+                        SqlDataReader reader = command.ExecuteReader();
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                int index = dataGridView1.Rows.Add(reader["TKO_OEM"], reader["Knt_Nazwa1"], Convert.ToBoolean(reader["TKO_PokazB2B"]), Convert.ToBoolean(reader["TKO_SzukajB2B"]), reader["TKO_KntNumer"], reader["TKO_GidNumer"]);
+                                ColorRow(index);
+                            }
+                        }
+                        else
+                        {
+                            reader.Close();
+                            query = "SELECT TPO_OpisKrotki FROM cdn.twrAplikacjeOpisy with (nolock) WHERE TPO_JezykId = 0 AND TPO_ObiNumer = @GidNumer";
+                            command = new SqlCommand(query, connection);
+                            command.Parameters.AddWithValue("@GidNumer", towarGid);
+                            reader = command.ExecuteReader();
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    kodyOEM = reader["TPO_OpisKrotki"].ToString().Split(',');
+                                }
+                                foreach (string kod in kodyOEM)
+                                {
+                                    int index = dataGridView1.Rows.Add(kod.Trim());
+                                    ColorRow(index);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Błąd przy kopiowaniu z karty: " + wynik.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("Błąd przy kopiowaniu z karty: " + ex.ToString(), "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            finally { ReturnToFront(); }
         }
         private void headerSzukajB2BChk_Click(object sender, EventArgs e)
         {
@@ -385,6 +448,11 @@ namespace DodajOem
             {
                 row.Cells["szukajB2B"].Value = headerSzukajB2BChk.Checked;
             }
+        }
+        private async void ReturnToFront() //Musimy o zrobić poprzez delay ponieważ Comarch po wybraniu z formatki czeka chwilę i chowa wszyskie podokna
+        {
+            await Task.Delay(200);
+            await Task.Run(() => { this.BringToFront(); });
         }
         private void headerPokazB2BChk_Click(object sender, EventArgs e)
         {
@@ -415,6 +483,7 @@ namespace DodajOem
                     if (dr == DialogResult.Yes)
                     {
                         ZapiszZmiany();
+                        WylogowanieXL(IDSesjiXL);
                         break;
                     }
                     else if (dr == DialogResult.Cancel)
@@ -431,6 +500,47 @@ namespace DodajOem
                         break;
                     }
                 }
+            }
+        }
+
+        private void LogowanieXL()
+        {
+            try
+            {
+                XLLoginInfo_20231 loginInfo = new XLLoginInfo_20231();
+                loginInfo.ProgramID = "Dodaj OEM";
+                loginInfo.Winieta = -1;
+                loginInfo.Wersja = APIVersion;
+
+                int wynik_XLLogin = cdn_api.cdn_api.XLLogin(loginInfo, ref IDSesjiXL);
+
+                if (wynik_XLLogin != 0)
+                {
+                    MessageBox.Show("Błąd logowania");
+                    Close();
+                }
+
+                if (loginInfo.Baza == "")
+                {
+                    MessageBox.Show("Nie zalogowano do XL-a, program kończy swoje działanie");
+                    Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Błąd logowania do XL-a, program kończy swoje działanie" + "\r" + ex.ToString());
+                Close();
+            }
+        }
+        private void WylogowanieXL(Int32 sessionID)
+        {
+            try
+            {
+                cdn_api.cdn_api.XLLogout(sessionID);
+            }
+            catch
+            {
+                MessageBox.Show("Nie udało się wylogować");
             }
         }
     }

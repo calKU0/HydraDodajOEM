@@ -306,7 +306,9 @@ namespace DodajOem
             this.Controls.Add(this.zapiszButton);
             this.Controls.Add(this.dodajButton);
             this.Controls.Add(this.dataGridView1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DodajOEMForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dodaj OEMY";
             this.Load += new System.EventHandler(this.DodajOEMForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
