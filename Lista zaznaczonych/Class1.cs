@@ -19,7 +19,7 @@ namespace DodajOem
     {
         ClaWindow button;
         ClaWindow ButtonParent;
-        private string connectionString { get; } = "user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database=" + Runtime.ActiveRuntime.Repository.Connection.Database.ToString() + ";connection timeout=5;";
+        private string ConnectionString { get; } = $"user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database={Runtime.ActiveRuntime.Repository.Connection.Database};connection timeout=5;";
 
         public override void Init()
         {
@@ -62,7 +62,7 @@ namespace DodajOem
         {
             try
             {
-                DodajOEMForm form1 = new DodajOEMForm(TwrKarty.Twr_GIDNumer, connectionString);
+                DodajOEMForm form1 = new DodajOEMForm(TwrKarty.Twr_GIDNumer, ConnectionString);
                 form1.Show();
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace DodajOem
             int liczbaOem = 0;
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
 
