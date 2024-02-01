@@ -8,7 +8,7 @@ namespace DodajOem
     public partial class DostawcyForm : Form
     {
         public string Dostawca { get; set; }
-        public int DostawcaGidNumer { get; set; }
+        public string DostawcaGidNumer { get; set; }
         public string Search { get; set; }
         private DataTable Dt { get; set; } = new DataTable("Dostawcy");
         public DostawcyForm(string connectionString, string search = "")
@@ -20,7 +20,7 @@ namespace DodajOem
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string query = "SELECT Knt_GIDNumer, Knt_Nazwa1 as Dostawca FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' order by Knt_Akronim";
+                    string query = "SELECT Knt_GIDNumer, Knt_Nazwa1 as Dostawca FROM cdn.KntKarty join cdn.Atrybuty ON Atr_Obinumer = Knt_GIDnumer and Atr_OBITyp=32 AND Atr_OBISubLp=0 and atr_atkid = 249 where atr_wartosc = 'TAK' UNION ALL Select NULL as Knt_GIDNumer, NULL as Dostawca order by 2";
                     SqlCommand command = new SqlCommand(query, connection);
                     SqlDataAdapter da = new SqlDataAdapter(command);
                     da.Fill(Dt);
@@ -37,7 +37,7 @@ namespace DodajOem
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             Dostawca = dataGridView1.Rows[e.RowIndex].Cells["Dostawca"].Value.ToString();
-            DostawcaGidNumer = (int)dataGridView1.Rows[e.RowIndex].Cells["Knt_GIDNumer"].Value;
+            DostawcaGidNumer = dataGridView1.Rows[e.RowIndex].Cells["Knt_GIDNumer"].Value.ToString();
             Search = txtSearch.Text ?? "";
 
             this.DialogResult = DialogResult.OK;
@@ -70,7 +70,7 @@ namespace DodajOem
             if (e.KeyCode == Keys.Enter)
             {
                 Dostawca = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells["Dostawca"].Value.ToString();
-                DostawcaGidNumer = (int)dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells["Knt_GIDNumer"].Value;
+                DostawcaGidNumer = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells["Knt_GIDNumer"].Value.ToString();
                 Search = txtSearch.Text ?? "";
                 e.SuppressKeyPress = true;
 
@@ -104,7 +104,7 @@ namespace DodajOem
             else if (e.KeyCode == Keys.Enter)
             {
                 Dostawca = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells["Dostawca"].Value.ToString();
-                DostawcaGidNumer = (int)dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells["Knt_GIDNumer"].Value;
+                DostawcaGidNumer = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells["Knt_GIDNumer"].Value.ToString();
                 Search = txtSearch.Text ?? "";
                 e.SuppressKeyPress = true;
 
