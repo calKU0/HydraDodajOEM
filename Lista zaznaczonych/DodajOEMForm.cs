@@ -124,19 +124,8 @@ namespace DodajOem
             {
                 if (e.ColumnIndex == dataGridView1.Columns["kodOEM"].Index)
                 {
-                    for (int a = 0; a <= dataGridView1.Rows.Count - 1; a++)
-                    {
-                        if (e.RowIndex != a)
-                        {
-                            if (dataGridView1.Rows[a].Cells["kodOEM"].Value.ToString() == dataGridView1.Rows[e.RowIndex].Cells["kodOEM"].Value.ToString())
-                            {
-                                ColorRow(e.RowIndex, Color.Red);
-                                return;
-                            }
-                        }
-                    }
+                    ColorRow(e.RowIndex);
                 }
-                if (dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor == Color.Red){}
                 else { ColorRow(e.RowIndex, true); }
             }
         }
@@ -280,7 +269,7 @@ namespace DodajOem
                 {
                     dataGridView1.Rows[index].DefaultCellStyle.BackColor = Color.Lime;
                 }
-                if (dataGridView1.Rows[index].Cells["oemGidNumer"].Value == null || forceChange)
+                else
                 {
                     dataGridView1.Rows[index].DefaultCellStyle.BackColor = Color.Yellow;
                 }
