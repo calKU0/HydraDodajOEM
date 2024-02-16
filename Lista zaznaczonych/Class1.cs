@@ -19,7 +19,7 @@ namespace DodajOem
     {
         ClaWindow button;
         ClaWindow ButtonParent;
-        private string ConnectionString { get; } = $"user id=xxxx;password=xxxx;Data Source=xxxx;Trusted_Connection=no;database={Runtime.ActiveRuntime.Repository.Connection.Database};connection timeout=5;";
+        private string ConnectionString { get; } = $"user id=Gaska;password=mNgHghY4fGhTRQw;Data Source=192.168.0.105;Trusted_Connection=no;database={Runtime.ActiveRuntime.Repository.Connection.Database};connection timeout=5;";
 
         public override void Init()
         {
