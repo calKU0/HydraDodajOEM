@@ -207,6 +207,7 @@ namespace DodajOem
                     {
                         MessageBox.Show($"Zaktualizowano kody OEM");
                     }
+                    this.Close();
                 }
             }
             catch (Exception ex) 
@@ -293,6 +294,9 @@ namespace DodajOem
         }
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
+            int rowIndex = dataGridView1.CurrentCell.RowIndex;
+            int columnIndex = dataGridView1.CurrentCell.ColumnIndex;
+
             if (e.KeyCode == Keys.Escape)
             {
                 this.DialogResult = DialogResult.Cancel;
@@ -300,8 +304,6 @@ namespace DodajOem
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                int rowIndex = dataGridView1.CurrentCell.RowIndex;
-                int columnIndex = dataGridView1.CurrentCell.ColumnIndex;
                 if (columnIndex == dataGridView1.Columns["Dostawca"].Index && rowIndex >= 0)
                 {
                     using (var forma = new DostawcyForm(connectionString, Search))
@@ -320,6 +322,7 @@ namespace DodajOem
                 }
                 e.SuppressKeyPress = true;
             }
+
             else if (e.Control == true && e.KeyCode == Keys.V) //Kopiowanie
             {
                 if (Clipboard.ContainsText())
@@ -335,21 +338,21 @@ namespace DodajOem
 
                         string[] values = rowText.Split('\t');
 
-                        int rowIndex = dataGridView1.Rows.Add();
+                        int newRowIndex = dataGridView1.Rows.Add();
 
                         for (int i = 0; i < values.Length; i++)
                         {
-                            dataGridView1.Rows[rowIndex].Cells[i].Value = values[i].Trim();
+                            dataGridView1.Rows[newRowIndex].Cells[i].Value = values[i].Trim();
 
                             if (dataGridView1.Columns[i] is DataGridViewCheckBoxColumn)
                             {
                                 if (values[i].Trim() == "1" || values[i].Trim().ToUpper() == "TAK")
                                 {
-                                    dataGridView1.Rows[rowIndex].Cells[i].Value = true;
+                                    dataGridView1.Rows[newRowIndex].Cells[i].Value = true;
                                 }
                                 else
                                 {
-                                    dataGridView1.Rows[rowIndex].Cells[i].Value = false;
+                                    dataGridView1.Rows[newRowIndex].Cells[i].Value = false;
                                 }
                             }
                         }

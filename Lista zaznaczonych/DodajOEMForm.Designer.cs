@@ -81,6 +81,7 @@ namespace DodajOem
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);
+            this.dataGridView1.StandardTab = false;
             // 
             // kodOEM
             // 
@@ -129,6 +130,7 @@ namespace DodajOem
             this.usunButton.Name = "usunButton";
             this.usunButton.Size = new System.Drawing.Size(33, 33);
             this.usunButton.TabIndex = 10;
+            this.pictureBox1.TabStop = false;
             this.usunButton.Click += new System.EventHandler(this.usunButton_Click);
             // 
             // zapiszButton
@@ -140,6 +142,7 @@ namespace DodajOem
             this.zapiszButton.Name = "zapiszButton";
             this.zapiszButton.Size = new System.Drawing.Size(31, 31);
             this.zapiszButton.TabIndex = 10;
+            this.pictureBox1.TabStop = false;
             this.zapiszButton.Click += new System.EventHandler(this.zapiszButton_Click);
             // 
             // dodajButton
@@ -151,6 +154,7 @@ namespace DodajOem
             this.dodajButton.Name = "dodajButton";
             this.dodajButton.Size = new System.Drawing.Size(33, 33);
             this.dodajButton.TabIndex = 10;
+            this.pictureBox1.TabStop = false;
             this.dodajButton.Click += new System.EventHandler(this.dodajButton_Click);
             // 
             // pictureBox1
@@ -190,6 +194,7 @@ namespace DodajOem
             this.textBox1.Location = new System.Drawing.Point(637, 421);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
+            this.pictureBox1.TabStop = false;
             this.textBox1.Size = new System.Drawing.Size(100, 13);
             this.textBox1.TabIndex = 6;
             this.textBox1.Text = "- Zmiana zapisana";
@@ -203,6 +208,7 @@ namespace DodajOem
             this.textBox2.Location = new System.Drawing.Point(637, 442);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
+            this.pictureBox1.TabStop = false;
             this.textBox2.Size = new System.Drawing.Size(100, 13);
             this.textBox2.TabIndex = 6;
             this.textBox2.Text = "- Zmiana niezapisana";
@@ -216,6 +222,7 @@ namespace DodajOem
             this.textBox3.Location = new System.Drawing.Point(637, 464);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
+            this.pictureBox1.TabStop = false;
             this.textBox3.Size = new System.Drawing.Size(100, 13);
             this.textBox3.TabIndex = 6;
             this.textBox3.Text = "- Zdublowany kod";
@@ -229,6 +236,7 @@ namespace DodajOem
             this.textBox4.Location = new System.Drawing.Point(12, 475);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
+            this.pictureBox1.TabStop = false;
             this.textBox4.Size = new System.Drawing.Size(33, 13);
             this.textBox4.TabIndex = 6;
             this.textBox4.Text = "Dodaj";
@@ -243,6 +251,7 @@ namespace DodajOem
             this.textBox6.Location = new System.Drawing.Point(157, 477);
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
+            this.pictureBox1.TabStop = false;
             this.textBox6.Size = new System.Drawing.Size(33, 13);
             this.textBox6.TabIndex = 6;
             this.textBox6.Text = "Usuń";
@@ -259,6 +268,7 @@ namespace DodajOem
             this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(33, 13);
             this.textBox7.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
             this.textBox7.Text = "Zapisz";
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -271,6 +281,7 @@ namespace DodajOem
             this.copyButton.Name = "copyButton";
             this.copyButton.Size = new System.Drawing.Size(31, 31);
             this.copyButton.TabIndex = 10;
+            this.pictureBox1.TabStop = false;
             this.copyButton.Click += new System.EventHandler(this.copyButton_Click);
             // 
             // textBox8
@@ -284,6 +295,7 @@ namespace DodajOem
             this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(72, 13);
             this.textBox8.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
             this.textBox8.Text = "Skopiuj z karty";
             this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -309,6 +321,7 @@ namespace DodajOem
             this.Controls.Add(this.dataGridView1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DodajOEMForm";
+            this.pictureBox1.TabStop = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dodaj OEMY";
             this.Load += new System.EventHandler(this.DodajOEMForm_Load);
